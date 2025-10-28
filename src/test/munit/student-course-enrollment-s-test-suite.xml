@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="student-course-enrollment-s-test-suite.xml" />
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest1" doc:id="069198f8-838b-487a-ae78-6118c3a745a5" description="Test" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when insert " doc:id="46fa6a7c-a4d5-4cb9-ba32-fa2efc4b7274" processor="db:insert" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="resuing" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="e46cb545-f2db-44cf-b252-018e934ca881" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="700d7249-171c-4c17-a094-cec009bb42eb" >
+				<munit:attributes value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;"query":"INSERT INTO students (student_name, address, mobile_number)&#10;             VALUES (:name, :address, :mobile_number)"&#10;&#10;}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="ad61c39d-a363-4622-8964-0041a207d2d9" name="post:\studentRegistration:application\json:student-course-enrollment-s-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="21c13614-226f-4e90-b55c-7e35bfc499f3" expression="#[payload]" is='#[MunitTools::notNullValue()]' />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest3" doc:id="eea3c0b5-51b7-435f-8386-da3984c72fc3" description="Test" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when select get course list" doc:id="a07ba0a0-0265-4bdb-beff-44608382777c" processor="db:select" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0b037df1-be98-40ed-86f1-a784caec47bd" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="302fc253-2fa9-41ac-89e2-15d998751110" >
+				<munit:attributes value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;"query":"SELECT * from courses",&#10;"mobile_Number":"2345678912"&#10;&#10;&#10;}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="9dfe6716-d75e-40ae-895e-d5f4e9a7203e" name="get:\coursesList:student-course-enrollment-s-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="de317e8b-54fb-48d4-80a2-002134f837e3" expression="#[payload]" is='#[MunitTools::notNullValue()]' />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest" doc:id="6bd70dbf-0452-4cbc-95c4-be99f35cd83e" description="Test">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="Mock when api-kit" doc:id="d1186afa-73a1-4b15-bbf7-2c4a08cb7df2" processor="apikit:router">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="student-course-enrollment-s-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="43690993-fa86-4e23-b7fd-79b3942a61de" name="student-course-enrollment-s-main" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="a01767c5-978e-4d73-93f7-ae83b8f19c48" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest2" doc:id="1ab81f15-dcfc-4190-849c-49ecd45a71af" description="Test" expectedErrorType="APIKIT:BAD_REQUEST">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when error-(api-kit-BadRequest)" doc:id="7b0080c4-84cb-454d-9b82-7891740e5866" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-s-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="4e847fe5-a3f9-4ed2-b04a-005537a0574f" name="student-course-enrollment-s-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest4" doc:id="4a0326ca-b55c-4f1f-ba20-6b27585703f2" description="Test" expectedErrorType="APIKIT:NOT_FOUND" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when error-(APIKIT:NOT_FOUND)" doc:id="370fafe5-1cd7-4877-8968-020a93337275" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-s-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="aacbf1e2-5f4c-4996-8a92-a7c0ab2022e0" name="student-course-enrollment-s-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest5" doc:id="48dabb79-53ea-453d-9c74-0af02cecc828" description="Test" expectedErrorType="APIKIT:METHOD_NOT_ALLOWED" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when error-(APIKIT:METHOD_NOT_ALLOWED)" doc:id="d366b798-3174-494f-83d3-2b57d6ca357a" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-s-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="6a976966-7a4c-41e4-88e5-5e43cc115264" name="student-course-enrollment-s-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest6" doc:id="9391544e-88ce-4f57-8086-c9b525ab2889" description="Test" expectedErrorType="APIKIT:NOT_ACCEPTABLE" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when error-(APIKIT:NOT_ACCEPTABLE)" doc:id="998f4b3f-ff67-4079-b384-f10b907ec83b" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-s-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="0fc67796-ef9d-4ead-b995-7fdeccb1b49f" name="student-course-enrollment-s-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest7" doc:id="e1b32f18-c4dc-4286-ab73-309fe51b6f6a" description="Test" expectedErrorType="APIKIT:UNSUPPORTED_MEDIA_TYPE" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when error-(APIKIT:UNSUPPORTED_MEDIA_TYPE)" doc:id="aef852e1-ec3e-4070-9039-63af182da60c" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-s-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="df3575b7-8685-4734-ae2a-e742cff0d7fc" name="student-course-enrollment-s-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest8" doc:id="9db5d081-b091-4812-be8a-7a3bc2c0991e" description="Test" expectedErrorType="APIKIT:NOT_IMPLEMENTED" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when error-(APIKIT:NOT_IMPLEMENTED)" doc:id="4e691a05-8cc5-4e53-970e-c8617f7bab6b" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-s-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="ea470450-9a20-4a90-849b-d5afb74775ae" name="student-course-enrollment-s-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest9" doc:id="ab36c7ea-a5ee-43fc-b0c8-2bdc35334163" description="Test" expectedErrorType="HTTP:BAD_REQUEST" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when error-(HTTP:BAD_REQUEST)" doc:id="4fc0d46d-0b2c-4527-ad58-8208aac00f35" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-s-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:BAD_REQUEST" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="6dd0ad8f-9532-4e6f-adb7-22ba2da71004" name="student-course-enrollment-s-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest10" doc:id="ca73f8f1-827e-4d86-bafc-c46488b49ca9" description="Test" expectedErrorType="HTTP:NOT_FOUND" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when error-(HTTP:NOT_FOUND)" doc:id="5b3f257a-4699-4be7-b349-0a4e1809f15d" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-s-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="682f7e29-aba8-424d-a187-9a0ee3de09d3" name="student-course-enrollment-s-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest11" doc:id="e5b93139-47f3-49d6-b7d1-11f9ce64bf9f" description="Test" expectedErrorType="HTTP:METHOD_NOT_ALLOWED" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when error-(HTTP:METHOD_NOT_ALLOWED)" doc:id="25538215-6cd1-4c7f-9316-59360ee11981" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-s-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="bfb52423-bd63-4108-9c0f-e9206adc1b5b" name="student-course-enrollment-s-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest12" doc:id="a9438c2f-4aa4-4f5c-bbad-021ab80f1104" description="Test" expectedErrorType="HTTP:NOT_ACCEPTABLE" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when error-(HTTP:NOT_ACCEPTABLE)" doc:id="22c5fd13-13db-42ff-8003-0941065d44f6" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-s-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="383c20dc-5a84-466e-9622-c1055b555688" name="student-course-enrollment-s-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest13" doc:id="06725e0e-a613-40e8-a06d-b1c984a43c40" description="Test" expectedErrorType="HTTP:UNSUPPORTED_MEDIA_TYPE" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when error-(HTTP:UNSUPPORTED_MEDIA_TYPE)" doc:id="de05aa7e-f201-41a1-a88e-72e4283312d1" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-s-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="f299cb03-7708-4f2b-8a7a-1df24cad3f20" name="student-course-enrollment-s-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest14" doc:id="88bd2c08-911c-4911-b569-31c63e3c373e" description="Test" expectedErrorType="DB:CONNECTIVITY" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when error-(DB:CONNECTIVITY)" doc:id="8f3d82bd-de56-4659-9633-18a9757261f1" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-s-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="DB:CONNECTIVITY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="d390cc20-517e-48bf-9bda-d8050dd10bd3" name="student-course-enrollment-s-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest15" doc:id="bafe7d9b-9b23-4595-a8e7-bb01604189d5" description="Test" expectedErrorType="DB:BAD_SQL_SYNTAX" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when error-(DB:BAD_SQL_SYNTAX)" doc:id="b48ed98c-b769-4797-b587-e21d3c6aeebb" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-s-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="DB:BAD_SQL_SYNTAX" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="b39051c3-c7ad-4118-89d9-8d4ee3af89e3" name="student-course-enrollment-s-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest16" doc:id="d39022bb-8937-4a62-86e5-720dc8b52790" description="Test" expectedErrorType="ANY" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when error-(ANY)" doc:id="f5ca9aa3-3a6f-40c6-ba7a-6531c302bf00" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-s-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="23d6ae3c-9f15-4f39-8953-1b18cf5d5dc6" name="student-course-enrollment-s-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest17" doc:id="5917c5c3-f138-469e-93ad-1bd1381c2aa9" description="Test" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when insert " doc:id="854f3640-3991-4cad-b2ed-41d53c524838" processor="db:insert" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="resuing" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="e46cb545-f2db-44cf-b252-018e934ca881" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="35816669-0073-41b6-b59d-7e6c68d1b8aa" >
+				<munit:attributes value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;"query":"INSERT INTO student_enrollments (student_id, course_id)&#10;            VALUES (:student_id, :course_id);"&#10;&#10;}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="3c5da89f-4578-465e-aefb-1bd3a3f949bb" name="post:\courseEnrollment:application\json:student-course-enrollment-s-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="7ebf9114-3757-4f9c-aa35-b698d14bfde2" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest18" doc:id="12e227c0-c06e-4b39-ba9c-cd897e88cb90" description="Test" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when select get course list by id" doc:id="35012bc7-dc7f-410e-b155-e50b36e3d56d" processor="db:select" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0b037df1-be98-40ed-86f1-a784caec47bd" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="b3447054-6e12-4e35-b74e-104f2b1829f5" >
+				<munit:attributes value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;"query":"SELECT * from courses",&#10;&#10;&#10;}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="95041608-6edd-46f6-b6a3-e8435e004742" name="get:\coursesList\(courseId):student-course-enrollment-s-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="62a1fd68-7044-41a5-84f9-31db34ac8074" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest19" doc:id="084620d0-fbfd-4b82-b4bf-3aafac71d2f9" description="Test" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when select get student reg by mobile" doc:id="e10bf8c9-771b-4531-a3e8-c6f16cf46a50" processor="db:select" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0b037df1-be98-40ed-86f1-a784caec47bd" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="ad03f041-67f0-4f24-a348-af059192872b" >
+				<munit:attributes value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;"query":"SELECT * from courses",&#10;&#10;&#10;}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="9027093e-0855-4db0-b40c-1fb14251002c" name="get:\studentRegistration\by-mobile:student-course-enrollment-s-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="b950b429-934c-472d-a826-42ea0ab1c80f" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest110" doc:id="050b4a24-1780-46bf-9404-9504bf4e61c9" description="Test" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when select get student reg by studentid" doc:id="e8f7b2e1-0e32-44bf-a132-6908ded8bd77" processor="db:select" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0b037df1-be98-40ed-86f1-a784caec47bd" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="2a2a83af-d37e-483e-9d7a-cbc2b806923d" >
+				<munit:attributes value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;"query":"SELECT * from courses",&#10;&#10;&#10;}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="7f12893a-ad34-4746-acbb-aaead9b665d8" name="get:\studentRegistration\(studentId):student-course-enrollment-s-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="4dc35a5a-ab2c-483a-9c17-a0765e555c05" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest111" doc:id="1e9652f0-13cc-408d-ab01-e3cdee8aad0e" description="Test" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when select get student enroll check dublicates" doc:id="147731e1-6910-4461-8a91-fc6d213a65f1" processor="db:select" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0b037df1-be98-40ed-86f1-a784caec47bd" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="ac4434fb-431b-4d45-9775-02293dc5b922" >
+				<munit:attributes value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;"query":"SELECT * &#10;FROM student_enrollments &#10;WHERE student_id = :student_id &#10;  AND course_id = :course_id;"&#10;&#10;&#10;}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="eacf8789-8e05-4f75-bc64-662fe23f0a3a" name="get:\courseEnrollment\check-duplicate:student-course-enrollment-s-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="b8aae48b-6679-4166-8a1a-770ce0746dc7" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest112" doc:id="d44120b2-fe81-46bb-9611-be8fd09e3cea" description="Test" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when select get course enrool count by studnet" doc:id="48c804b8-8ad8-46bb-a63b-e2757061eeaf" processor="db:select" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0b037df1-be98-40ed-86f1-a784caec47bd" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="3b2312b3-833d-4ac7-af38-2f359e42a538" >
+				<munit:payload value='#[{&#10;  "studentId": 1,&#10;  "courseId": "C003"&#10;}]' />
+				<munit:attributes value='#[{&#10;	"headers": {&#10;		"query":"SELECT COUNT(*) AS total_count&#10;FROM student_enrollments&#10;WHERE student_id = :student_id;"&#10;	},&#10;	"queryParams": {&#10;		"studentId": 1&#10;	}&#10;}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="5b2df3b7-0c1a-4283-8550-0e1ff29718b2" name="get:\courseEnrollment\count-by-student:student-course-enrollment-s-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="84d1b561-9961-4f01-bf6b-b765111fc0fa" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest113" doc:id="c239d0e9-7da7-4387-b65e-0aa1f554cc90" description="Test" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when select get course enrool course by student" doc:id="415ab5b7-1421-4297-adc4-662171b1c733" processor="db:select" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0b037df1-be98-40ed-86f1-a784caec47bd" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="fc01e3d1-d044-45da-9920-e9956622df85" >
+				<munit:attributes value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;"query":"SELECT &#10;  c.course_id,&#10;  c.course_name &#10;FROM student_enrollments e&#10;JOIN courses c ON e.course_id = c.course_id&#10;WHERE e.student_id = :student_id;&#10;"&#10;&#10;&#10;}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="e4db2579-dd9c-44d0-8f2a-3ef0d3d15f2e" name="get:\courseEnrollment\courses-by-student:student-course-enrollment-s-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="ec3aaac7-75bb-4f64-b27e-4ffa12b530de" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="student-course-enrollment-s-test-suite-get:\studentRegistration\by-mobile:student-course-enrollment-s-configTest114" doc:id="71d1f90d-40cb-4d7e-b5bf-a046cea130cd" description="Test" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when select get course enrool student by courses" doc:id="2d729833-cbdb-45d8-b6f3-9a9d1bcef99b" processor="db:select" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="0b037df1-be98-40ed-86f1-a784caec47bd" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="527189cd-31a3-4f15-9fe7-87989eff7c10" >
+				<munit:attributes value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;"query":"SELECT s.student_id ,&#10;       s.student_name ,&#10;       s.mobile_number&#10;FROM student_enrollments e&#10;JOIN students s ON e.student_id = s.student_id&#10;WHERE e.course_id = :course_id;"&#10;&#10;&#10;}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="6213d3d0-b875-4e6a-b6f7-1709d1895c87" name="get:\courseEnrollment\students-by-course:student-course-enrollment-s-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="c137f53e-b6da-42fb-8b9a-ed090684b346" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

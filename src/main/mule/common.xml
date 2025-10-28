@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<sub-flow name="insert-Sub_Flow" doc:id="0f99fd70-88e1-4515-98ea-0932810cf705" >
+		<logger level="INFO" doc:name="sub flow started" doc:id="f5a71366-10ff-4997-80f0-c5b8ac025341" message='sub-flow "insert-sub-flow"started'/>
+		<db:insert doc:name="resuing" doc:id="e46cb545-f2db-44cf-b252-018e934ca881" config-ref="Database_Config" autoGenerateKeys="true">
+			<db:sql ><![CDATA[#[payload.db_query]]]></db:sql>
+			<db:input-parameters ><![CDATA[#[payload.input_params]]]></db:input-parameters>
+		</db:insert>
+		<logger level="INFO" doc:name="sub-flow ended" doc:id="a99e4a1d-6a0b-466f-b988-013f4bc8d95f" message='sub-flow "insert-sub-flow" ended'/>
+	</sub-flow>
+	<sub-flow name="select-Sub_Flow" doc:id="47517b86-668d-4005-a285-a195b241f874" >
+		<logger level="INFO" doc:name="sub flow started" doc:id="1209639b-6296-430f-8847-88f76cd60e8f" message='sub-flow "select-Sub_Flow" started' />
+		<db:select doc:name="Select" doc:id="0b037df1-be98-40ed-86f1-a784caec47bd" config-ref="Database_Config">
+			<db:sql ><![CDATA[#[payload.db_query]]]></db:sql>
+			<db:input-parameters ><![CDATA[#[payload.input_params]]]></db:input-parameters>
+		</db:select>
+		<!-- [STUDIO:"Select"]<db:select doc:name="Select" doc:id="c834c058-2192-4eed-8776-5d96e886be40" config-ref="Database_Config">
+			<db:sql><![CDATA[#[payload.db_query&#93;
+&#93;&#93;></db:sql>
+			<db:input-parameters><![CDATA[#[payload.input_params&#93;&#93;&#93;></db:input-parameters>
+		</db:select> [STUDIO] -->
+		<logger level="INFO" doc:name="sub-flow ended" doc:id="1abe8039-6762-4ee7-8b78-ffac152a42ba" message='sub-flow "select-sub-flow" ended' />
+	</sub-flow>
+</mule>

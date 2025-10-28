@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <flow name="student-course-enrollment-s-main" doc:id="0d3b6660-610a-4626-bcf6-ab60e88585f4">
+        <http:listener config-ref="orders-prc-api-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="student-course-enrollment-s-config" />
+    </flow>
+    <flow name="get:\studentRegistration\by-mobile:student-course-enrollment-s-config" doc:id="9f288ea4-c4e5-4808-8ae7-56f2b51ce834">
+		<flow-ref doc:name="Flow Reference to sub flow to get details" doc:id="47b6bcb2-b861-4e21-b804-66109d23709d" name="get-student-registration-by-mobile-num-sub-flow"/>
+    </flow>
+    <flow name="get:\courseEnrollment\check-duplicate:student-course-enrollment-s-config" doc:id="3b010ea2-eba6-44f3-9218-b07ba1624cf5">
+		<flow-ref doc:name="Flow Reference to sub flow to check duplicates" doc:id="8bf1464f-986c-4ca8-b75a-ff87c9e787e8" name="get-check-duplicates-sub-flow"/>
+    </flow>
+    <flow name="get:\courseEnrollment\count-by-student:student-course-enrollment-s-config" doc:id="e0d4a14f-682e-45fc-9462-61f74da37477">
+		<flow-ref doc:name="Flow Reference to sub flow to get count of students enrolled" doc:id="98694350-b23f-4a1e-a322-ddd9de882027" name="get-count-by-student-sub-flow"/>
+    </flow>
+    <flow name="get:\courseEnrollment\courses-by-student:student-course-enrollment-s-config" doc:id="ccdd1ccc-82b4-4fb6-b2ec-4959867b4f9f">
+		<flow-ref doc:name="Flow Reference to sub flow to get courses by student" doc:id="19d22ad1-77fd-4a68-bb00-02edf3c41102" name="get-courses-by-student-sub-flow"/>
+    </flow>
+    <flow name="get:\coursesList:student-course-enrollment-s-config" doc:id="efc62554-bcef-4159-80aa-299ad1c2476d">
+		<flow-ref doc:name="Flow Reference to sub flow to get details of course list" doc:id="f99b67e3-3da8-4585-9a88-18bf555c8ae6" name="get-courseList-sub-flow"/>
+    </flow>
+    <flow name="get:\courseEnrollment\students-by-course:student-course-enrollment-s-config" doc:id="bb7afd47-edd4-4ca6-ad87-07da871e2c55">
+		<flow-ref doc:name="Flow Reference to sub flow to get details of students by course" doc:id="b18e94c9-c4d2-452c-b344-1f988364b88f" name="get-students-by-course-sub-flow"/>
+    </flow>
+    <!-- [STUDIO:"get:\coursesList\(courseId):student-course-enrollment-s-config"]<flow name="get:\coursesList\(courseId):student-course-enrollment-s-config" doc:id="b0acd25a-c6c3-49fa-8812-8540363d700c">
+		<flow-ref doc:name="Flow Reference to sub flow to get details of course by course ID" doc:id="0c48c6af-60a9-43b9-8506-cb6f3930e2bd" name="get-courseList-by-id-sub-flow"/>
+    </flow> [STUDIO] -->
+    <!-- [STUDIO:"get:\studentRegistration\(studentId):student-course-enrollment-s-config"]<flow name="get:\studentRegistration\(studentId):student-course-enrollment-s-config" doc:id="3d3386ca-d783-45f1-b95a-52502e887bfd">
+		<flow-ref doc:name="Flow Reference to sub flow to get details by studentID" doc:id="929a7288-32ee-4c33-a992-db476c7ce515" name="get-studentRegistation-by-id-sub-flow"/>
+    </flow> [STUDIO] -->
+    <flow name="post:\courseEnrollment:application\json:student-course-enrollment-s-config" doc:id="51200bbe-86eb-4d17-995f-d0e5137b1513">
+		<flow-ref doc:name="Flow Reference to sub flow to enroll a course" doc:id="de305508-ce6d-4326-a84e-8f4d0b613216" name="post-courseEnrollment-sub-flow"/>
+    </flow>
+    <flow name="post:\studentRegistration:application\json:student-course-enrollment-s-config" doc:id="a54956be-1c27-4d8c-a2de-9720e7655c01">
+		<flow-ref doc:name="Flow Reference to sub flow to register a student" doc:id="c7a499d3-d963-415c-a663-1f10120755a2" name="post-studentRegistration-sub-flow"/>
+    </flow>
+</mule>

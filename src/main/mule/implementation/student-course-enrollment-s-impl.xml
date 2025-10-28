@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="get-courseList-sub-flow" doc:id="67114ecf-43f4-48d0-834a-ad26f09651b5" >
+		<logger level="INFO" doc:name="sub-flow started" doc:id="3e943a0a-7629-4194-a4ae-c5e3d2e278a6" message='sub-flow "get-courseList-sub-flow" started'/>
+		<ee:transform doc:name="reusing the db select query" doc:id="beca9854-0ea0-438d-aa61-7f80d3d944fa" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    db_query: attributes.headers.query,
+    input_params: {
+        
+    }
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="content" ><![CDATA[%dw 2.0
+output application/json
+---
+{}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference to the common select" doc:id="c9219b68-0212-4b6f-ae5c-6f6b6bdda417" name="select-Sub_Flow"/>
+		<!-- [STUDIO:"to get the course list"]<db:select doc:name="to get the course list" doc:id="00458186-bc8e-4158-b73e-d2550baf5493" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * from courses
+
+&#93;&#93;></db:sql>
+		</db:select> [STUDIO] -->
+		<ee:transform doc:name="to print the list of courses" doc:id="44a5c27f-7c2b-418e-b5bc-dd8bcfcf7276" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="sub flow ended" doc:id="bafb2483-e8e4-474f-9635-2cc63a4a0ac0" message='sub flow "get-courseList-sub-flow" ended'/>
+	</sub-flow>
+	<sub-flow name="get-student-registration-by-mobile-num-sub-flow" doc:id="306348e2-f0a8-4116-b57f-c0e925e7632f">
+    <logger level="INFO" doc:name="sub-flow started" doc:id="a718caee-17b4-4f89-8683-110617b88ad5" message='sub flow "get-student-registration-by-mobile-num-sub-flow" started'/>
+    
+    
+    <ee:transform doc:name="getting the query params" doc:id="b1e971d1-7acf-41a4-a349-21d2669f9916">
+        <ee:message>
+            <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    db_query: attributes.headers.query,
+    input_params: {
+        mobile_number: attributes.queryParams.mobileNumber
+    }
+}]]></ee:set-payload>
+        </ee:message>
+    </ee:transform>
+    
+    <!-- [STUDIO:"Transform Message"]<ee:transform doc:name="Transform Message" doc:id="2307fa1e-9e39-4143-b1dd-82932312e739" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+attributes.headers.query&#93;&#93;></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="content" ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+mobile_number: payload.mobileNumber&#93;&#93;></ee:set-variable>
+			</ee:variables>
+		</ee:transform> [STUDIO] -->
+		<flow-ref doc:name="Flow Reference to the common select" doc:id="0f5c1c75-8e8a-4680-b1c0-e49c26c49adf" name="select-Sub_Flow"/>
+    
+    
+    <!-- [STUDIO:"student info by number"] <db:select doc:name="student info by number" doc:id="8a64b2bb-c0f3-4638-a520-33bc4aeec3a4" config-ref="Database_Config">
+        <db:sql><![CDATA[SELECT student_id AS "studentId", student_name AS "name", address, mobile_number AS "mobileNumber" 
+FROM students 
+WHERE mobile_number = :mobile_number;&#93;&#93;></db:sql>
+        <db:input-parameters><![CDATA[#[{ mobile_number: payload.mobileNumber }&#93;&#93;&#93;></db:input-parameters>
+    </db:select> [STUDIO] -->
+    
+    <ee:transform doc:name="success response" doc:id="e4e9efca-9d73-44af-9f4b-49f805e9cd2e">
+        <ee:message>
+            <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+        </ee:message>
+    </ee:transform>
+    
+    <logger level="INFO" doc:name="sub flow ended" doc:id="72da7a3c-1bf3-45b1-843f-65106c07ab68" message='sub flow "get-student-registration-by-mobile-num-sub-flow" ended'/>
+</sub-flow>
+
+
+	<sub-flow name="get-students-by-course-sub-flow" doc:id="3361a7e9-8c0f-4674-8453-71bb4a419148" >
+		<logger level="INFO" doc:name="sub flow started" doc:id="9c1f94ef-2a83-4ffc-8f2e-43041ca9bf85" message='sub-flow "get-students-by-course" started' />
+		<!-- [STUDIO:"creating var for courseId"]<set-variable value="#[attributes.queryParams.courseId&#93;" doc:name="creating var for courseId" doc:id="9e298211-c687-47cb-88ed-cce40cb1ca19" variableName="courseId"/> [STUDIO] -->
+		<ee:transform doc:name="query" doc:id="e8eef7d1-bf59-49c0-9c79-684ac505e826" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  db_query: attributes.headers.query,
+  input_params: {
+    course_id: attributes.queryParams.courseId
+  }
+}
+]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="content" ><![CDATA[%dw 2.0
+output application/java
+---
+course_id: vars.courseId ]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference to select sub flow" doc:id="515f9a8b-19d0-496c-820c-b164b124045a" name="select-Sub_Flow"/>
+		<!-- [STUDIO:"retrieving data by courseId"]<db:select doc:name="retrieving data by courseId" doc:id="960e5f64-80b3-4636-a2e4-8edebff852be" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT s.student_id AS "studentId",
+       s.student_name AS "name",
+       s.mobile_number AS "mobileNumber"
+FROM student_enrollments e
+JOIN students s ON e.student_id = s.student_id
+WHERE e.course_id = :course_id;
+&#93;&#93;></db:sql>
+			<db:input-parameters ><![CDATA[#[{ course_id: vars.courseId }&#93;&#93;&#93;></db:input-parameters>
+		</db:select> [STUDIO] -->
+		<ee:transform doc:name="success response" doc:id="05a94d12-c37d-42b7-8fa4-9538fc79e729" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="sub flow ended" doc:id="1a0e1a53-73c2-4e20-bc55-92caa5ba5e7e" message='sub-flow "get-students-by-course" ended' />
+	</sub-flow>
+	<sub-flow name="get-count-by-student-sub-flow" doc:id="9f069921-81f9-4e75-b02e-c6826a7be696" >
+		<logger level="INFO" doc:name="sub flow started" doc:id="8bcfe0c5-35d5-48d3-bbbb-e187b7696992" message='sub-flow "get-count-by-student" started' />
+		<ee:transform doc:name="count query" doc:id="6f2c9620-61a0-40f1-8cd9-1694ad73d6eb" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  db_query: attributes.headers.query,
+  input_params: {
+    student_id: attributes.queryParams.studentId as Number
+  }
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference to select sub flow" doc:id="86e98724-1f39-47f9-85aa-c74972d86c0d" name="select-Sub_Flow"/>
+		<!-- [STUDIO:"Select"]<db:select doc:name="Select" doc:id="c9a7566d-894e-466a-a103-43ca10f65d34" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT COUNT(*) AS total_count
+FROM student_enrollments
+WHERE student_id = :student_id;
+&#93;&#93;></db:sql>
+			<db:input-parameters ><![CDATA[#[{ student_id: payload.studentId }&#93;&#93;&#93;></db:input-parameters>
+		</db:select> [STUDIO] -->
+		<ee:transform doc:name="success response" doc:id="58c1d2d2-812c-4bf0-850b-f31a93a4e471">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="sub flow ended" doc:id="69eea1e2-80b6-4640-a0e1-8f1085c4b246" message='sub-flow "get-count-by-student" ended' />
+	</sub-flow>
+	<!-- [STUDIO:"get-courseList-by-id-sub-flow"]<sub-flow name="get-courseList-by-id-sub-flow" doc:id="be1852b0-4ef3-4385-b49f-2c134dcd5138" >
+		<logger level="INFO" doc:name="sub flow started" doc:id="4703fc3e-8016-4723-8aed-d56566848cd2" message='sub-flow "get-courseList-by-id" started' />
+		<ee:transform doc:name="Transform Message" doc:id="d4723e9d-984e-4e88-8ec2-5ef5a03936f4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+{
+  courseId: attributes.uriParams.courseId
+}
+&#93;&#93;></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="2a7c9fc3-f371-4a23-bb85-2d70c0a81f48" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+"SELECT course_id ,
+       course_name
+FROM courses
+WHERE course_id = :course_id;"&#93;&#93;></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="content" ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+course_id: payload.courseId&#93;&#93;></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="e0acafa8-62b2-4e87-92de-069f3475905d" name="select-Sub_Flow"/>
+		<db:select doc:name="Select" doc:id="3eb05d7f-bac2-4fcd-8268-42b662432cf9" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT course_id AS "courseId",
+       course_name AS "courseName"
+FROM courses
+WHERE course_id = :course_id;
+&#93;&#93;></db:sql>
+			<db:input-parameters ><![CDATA[#[{ course_id: payload.courseId }&#93;&#93;&#93;></db:input-parameters>
+		</db:select>
+		<logger level="INFO" doc:name="Logger" doc:id="f8feb0ef-dc2b-4768-8945-7ed106beff69" message="#[payload&#93;" />
+		<ee:transform doc:name="Transform Message" doc:id="56fbd65e-2c22-4f9b-bb62-10a52f9e8576" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+payload&#93;&#93;></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="sub flow ended" doc:id="952d8446-1ed4-40e3-a123-25a0b677dd31" message='sub-flow "get-courseList-by-id" started' />
+	</sub-flow> [STUDIO] -->
+	<!-- [STUDIO:"get-studentRegistation-by-id-sub-flow"]<sub-flow name="get-studentRegistation-by-id-sub-flow" doc:id="d4f211b3-33a6-40a0-b235-09b4a6fef4ca" >
+		<logger level="INFO" doc:name="sub flow started" doc:id="c5b0f9ec-7220-4e88-9a14-3c141770ae15" message='sub-flow "get-studentRegistation-by-id-sub-flow" started' />
+		<ee:transform doc:name="Transform Message" doc:id="11770399-3fbf-407c-8ac7-5e4ce67c901e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+{
+  studentId: attributes.uriParams.studentId
+}
+&#93;&#93;></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="ce4bbace-9d54-41ce-950b-28ef685057ec" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+"SELECT student_id,
+       student_name ,
+       address,
+       mobile_number
+FROM students
+WHERE student_id = :student_id;"
+&#93;&#93;></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="content" ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+student_id: payload.studentId&#93;&#93;></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="5dfac281-3cc4-42d7-a420-40c8fc83bdba" name="select-Sub_Flow"/>
+		<db:select doc:name="Select" doc:id="56ef4474-406c-4fe4-b8ca-dcfc7d5fb6de" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT student_id AS "studentId",
+       student_name AS "name",
+       address,
+       mobile_number AS "mobileNumber"
+FROM students
+WHERE student_id = :student_id;
+&#93;&#93;></db:sql>
+			<db:input-parameters ><![CDATA[#[{ student_id: payload.studentId }&#93;&#93;&#93;></db:input-parameters>
+		</db:select>
+		<logger level="INFO" doc:name="Logger" doc:id="0285047c-b088-47e7-b61e-578cc7e65a79" message="#[payload&#93;"/>
+		<ee:transform doc:name="Transform Message" doc:id="9fef6079-5a0f-4e75-b0f3-56814a8d9811" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+payload
+&#93;&#93;></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="sub flow ended" doc:id="292fe3f4-0d4b-4411-bad1-bc5930c13742" message='sub-flow "get-studentRegistation-by-id-sub-flow" ended' />
+	</sub-flow> [STUDIO] -->
+	<sub-flow name="get-courses-by-student-sub-flow" doc:id="8f1fc162-6fde-49bf-96f9-b33af6ebc8c7" >
+		<logger level="INFO" doc:name="sub flow started" doc:id="035c4f47-9204-4262-a0cc-3cb39e099e98" message='sub-flow "get-course-by-student" started' />
+		<!-- [STUDIO:"Set Variable"]<set-variable value="#[attributes.queryParams.studentId&#93;" doc:name="Set Variable" doc:id="5a9024ed-7ca8-4c5d-86f9-0ef16cef5020" variableName="studentId"/> [STUDIO] -->
+		<ee:transform doc:name="query" doc:id="07fcfad6-2d20-4edb-8ae2-b7cb84a7de08" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  db_query: attributes.headers.query,
+  input_params: {
+    student_id: attributes.queryParams.studentId
+  }
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="content" ><![CDATA[%dw 2.0
+output application/json
+---
+student_id: vars.studentId]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference to select sub flow" doc:id="06931e97-206d-4b29-8f38-ad37577f7be5" name="select-Sub_Flow"/>
+		<!-- [STUDIO:"Select"]<db:select doc:name="Select" doc:id="65a3902d-0f50-4e9e-befa-6223d6241a80" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT 
+  c.course_id AS "courseId",
+  c.course_name AS "courseName"
+FROM student_enrollments e
+JOIN courses c ON e.course_id = c.course_id
+WHERE e.student_id = :student_id;
+&#93;&#93;></db:sql>
+			<db:input-parameters ><![CDATA[#[{ student_id: vars.studentId }&#93;&#93;&#93;></db:input-parameters>
+		</db:select> [STUDIO] -->
+		<ee:transform doc:name="success response" doc:id="9f3d9805-f6dc-4a21-8a04-c053b5775410" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="sub-flow ended" doc:id="7958d46b-5ac7-458d-b2d1-83fb65fdec81" message='sub-flow "get-course-by-student" ended' />
+	</sub-flow>
+	<sub-flow name="post-courseEnrollment-sub-flow" doc:id="60af523c-b596-467a-b6b0-f3741740a01f" >
+		<logger level="INFO" doc:name="sub flow started" doc:id="a4541423-452c-4dac-8517-9b2c07e822f9" message='sub-flow "post-courseEnrollment-sub-flow" started' />
+		<ee:transform doc:name="query" doc:id="d8b08ca6-e734-4896-bab2-3287019c5b20" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  db_query: attributes.headers.query,
+  input_params: {
+    student_id: payload.studentId,
+    course_id: payload.courseId
+  }
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="content" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+student_id: payload.studentId,
+course_id: payload.courseId
+
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference to insert sub flow" doc:id="febaebd8-08a6-4d81-b6e9-791226c18af2" name="insert-Sub_Flow"/>
+		<!-- [STUDIO:"Insert"]<db:insert doc:name="Insert" doc:id="cf29f035-f1a9-48f4-bf0f-8012868660b6" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO student_enrollments (student_id, course_id)
+            VALUES (:student_id, :course_id);&#93;&#93;></db:sql>
+			<db:input-parameters ><![CDATA[#[{ 
+	student_id: payload.studentId,
+    course_id: payload.courseId
+}&#93;&#93;&#93;></db:input-parameters>
+		</db:insert> [STUDIO] -->
+		<ee:transform doc:name="success response" doc:id="e30f6e86-2bd2-402e-a9c6-86c8a920392a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+ EnrollmentID:payload.generatedKeys[2]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="sub flow ended" doc:id="bb9a6594-456e-49e8-8118-3e96c9fe2c40" message='sub-flow "post-courseEnrollment-sub-flow" started' />
+	</sub-flow>
+	<sub-flow name="get-check-duplicates-sub-flow" doc:id="48a9130a-7fbd-4bca-9e7b-462c627c093a" >
+		<logger level="INFO" doc:name="sub-flow started" doc:id="5a3f6bb5-08ee-4c04-a5ad-8af6b8c5c6aa" message='sub flow "get-check-duplicates-sub-flow" started'/>
+		<ee:transform doc:name="query" doc:id="590dc41a-f7cf-45b0-b5b6-45b14b48caa7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  db_query: attributes.headers.query,
+  input_params: {
+    student_id: attributes.queryParams.studentId,
+    course_id: attributes.queryParams.courseId
+  }
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference to select sub flow" doc:id="01bb4d48-0cb4-4555-b6e0-47f9364f7183" name="select-Sub_Flow"/>
+		<!-- [STUDIO:"Select"]<db:select doc:name="Select" doc:id="7135e5ef-035d-4cf3-9f90-496c7bca8fa9" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT student_id, student_name, mobile_number
+FROM students
+WHERE mobile_number = :mobile_number;
+&#93;&#93;></db:sql>
+			<db:input-parameters ><![CDATA[#[{ mobile_number: vars.mobileNumber }&#93;&#93;&#93;></db:input-parameters>
+		</db:select> [STUDIO] -->
+		<ee:transform doc:name="Transform Message" doc:id="49196dcb-36b8-4337-abd9-09b49df7f47d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="post-studentRegistration-sub-flow" doc:id="d46ccea0-47fc-40c1-9b94-f38e1fe17468" >
+		<logger level="INFO" doc:name="sub flow started" doc:id="be1c42ea-69a6-41f1-bcd2-4028290aae4c" message='sub-flow "post-studentRegistration-sub-flow" started' />
+		<ee:transform doc:name="query" doc:id="72382b75-618d-4cf4-bd73-71711ff7cd85" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    db_query: attributes.headers.query,
+    input_params: {
+    	name: payload.name,
+    	address: payload.address,
+        mobile_number: payload.mobileNumber
+        
+    }
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="content" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+              name: payload.name,
+              address: payload.address,
+              mobile_number: payload.mobileNumber
+            }]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference to insert sub flow" doc:id="29efd9b7-5d72-4c52-bc99-15c577d33162" name="insert-Sub_Flow"/>
+		<!-- [STUDIO:"Insert"]<db:insert doc:name="Insert" doc:id="6ff270db-98e2-4ad0-8d6f-01aefd4dba80" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO students (student_name, address, mobile_number)
+            VALUES (:name, :address, :mobile_number);&#93;&#93;></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+              name: payload.name,
+              address: payload.address,
+              mobile_number: payload.mobileNumber
+            }&#93;&#93;&#93;></db:input-parameters>
+		</db:insert> [STUDIO] -->
+		<ee:transform doc:name="success response" doc:id="eb4daeed-6419-4948-90c9-71e9b452a8a4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+studentId: payload.generatedKeys[0]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="sub flow ended" doc:id="5b893896-ec08-4396-9394-8fd6348da5f5" message='sub-flow "post-studentRegistration-sub-flow" ended' />
+	</sub-flow>
+</mule>
