@@ -1,0 +1,9 @@
+%dw 2.0
+
+type auto_87b4ca49_5038_466f_8632_1018e1895c3e_Output_Payload = {
+  enrollmentId?: Number, 
+  message: String, 
+  status: "success" | "error", 
+  _?: Any
+}
+

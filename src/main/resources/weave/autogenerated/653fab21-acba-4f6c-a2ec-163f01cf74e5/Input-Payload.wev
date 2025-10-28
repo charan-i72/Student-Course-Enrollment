@@ -1,0 +1,9 @@
+%dw 2.0
+
+type auto_653fab21_acba_4f6c_a2ec_163f01cf74e5_Input_Payload = {
+  address: String, 
+  mobileNumber: String, 
+  name: String, 
+  _?: Any
+}
+

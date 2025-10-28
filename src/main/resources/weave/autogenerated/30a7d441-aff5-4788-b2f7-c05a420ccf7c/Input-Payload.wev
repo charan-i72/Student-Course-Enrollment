@@ -1,0 +1,8 @@
+%dw 2.0
+
+type auto_30a7d441_aff5_4788_b2f7_c05a420ccf7c_Input_Payload = {
+  studentId: Number, 
+  courseId: String, 
+  _?: Any
+}
+

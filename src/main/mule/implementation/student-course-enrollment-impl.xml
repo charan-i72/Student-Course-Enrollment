@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+    xmlns="http://www.mulesoft.org/schema/mule/core"
+    xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+    http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+    http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+    http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+
+    <sub-flow name="post-courseEnrollment-sub-flow" doc:id="f2a69e9e-56f2-4d60-a5a0-6cb1f28533c4" >
+		<logger level="INFO" doc:name="sub flow started" doc:id="511f3bd1-1dbd-4aa7-948d-dfbbff197144" message='sub flow "post-courseEnrollment-subflow" started'/>
+		<ee:transform doc:name="queries and payload" doc:id="aee4f74e-d17b-4db3-9c38-13cf128e65f6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "selectDuplicate": "SELECT * 
+FROM student_enrollments 
+WHERE student_id = :student_id 
+  AND course_id = :course_id;",
+  "select": "SELECT * 
+FROM student_enrollments 
+WHERE student_id = :student_id 
+  AND course_id = :course_id;",
+
+  "insert": "INSERT INTO student_enrollments (student_id, course_id)
+            VALUES (:student_id, :course_id);",
+
+  "countCourses": "SELECT COUNT(*) AS total_count
+FROM student_enrollments
+WHERE student_id = :student_id;",
+
+  "payload": {
+    "studentId": payload.studentId,
+    "courseId": payload.courseId
+  }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-variable value='#["INSERT INTO student_enrollments (student_id, course_id)&#10;            VALUES (:student_id, :course_id);"]' doc:name="insertQuery" doc:id="c3288377-d6dd-46e4-89e1-5168fb9a7358" variableName="insertQuery"/>
+		<set-variable value="#[payload.payload]" doc:name="studentInfo" doc:id="a534285b-0933-4cd2-be2e-247df290fd91" variableName="studentInfo"/>
+		<set-variable value="#[payload.selectDuplicate]" doc:name="selectDuplicateQuery" doc:id="2a768c0a-4975-427f-9b67-b4eb75f66b0b" variableName="selectDuplicateQuery"/>
+		<set-variable value="#[payload.countCourses]" doc:name="countCoursesQuery" doc:id="328e3a0c-65f8-4c19-a6d9-d2d2d1944be0" variableName="countCoursesQuery"/>
+		<!-- [STUDIO:"Request student ID"]<http:request method="GET" doc:name="Request student ID" doc:id="bbaca555-c845-43ce-af9b-c518233f5d9d" config-ref="HTTP_Request_configuration" path="/api/studentRegistration/{studentId}">
+			<http:headers ><![CDATA[#[{
+	query:"SELECT student_id,
+       student_name ,
+       address,
+       mobile_number
+FROM students
+WHERE student_id = :student_id;"
+}&#93;&#93;&#93;></http:headers>
+			<http:uri-params ><![CDATA[#[{
+	"studentId": vars.studentInfo.studentId
+}&#93;&#93;&#93;></http:uri-params>
+		</http:request> [STUDIO] -->
+		<!-- [STUDIO:"Choice"]<choice doc:name="Choice" doc:id="5207d336-747e-406d-b169-aef723c8245c" >
+			<when expression="#[isEmpty(payload)&#93;">
+				<ee:transform doc:name="Transform Message" doc:id="d2319fe3-71f9-4045-b6e4-31d2f22fa43b" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+{
+  status: "error",
+  message: "student ID not found in the system",
+}&#93;&#93;></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<raise-error doc:name="Raise error" doc:id="50ba8297-b315-41ed-a831-a842ad0529e4" type="VALIDATION:NOT_FOUND" description="student not found in DB" />
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="student present" doc:id="4e01373b-7e36-4ae0-a05c-216404280229" message='"student is present"'/>
+			</otherwise>
+		</choice> [STUDIO] -->
+		<!-- [STUDIO:"Request"]<http:request method="GET" doc:name="Request" doc:id="ab9e06a0-0690-4762-9214-8f9557ff23e3" config-ref="HTTP_Request_configuration" path="/api/coursesList/{courseId}">
+			<http:headers ><![CDATA[#[{
+	query:"SELECT course_id ,
+       course_name
+FROM courses
+WHERE course_id = :course_id;"
+}&#93;&#93;&#93;></http:headers>
+			<http:uri-params ><![CDATA[#[{
+	"courseId": vars.studentInfo.courseId
+}&#93;&#93;&#93;></http:uri-params>
+		</http:request> [STUDIO] -->
+		<!-- [STUDIO:"Choice"]<choice doc:name="Choice" doc:id="a5981a6e-ae0d-47ba-ad28-8cacc817f221" >
+			<when expression="#[isEmpty(payload)&#93;">
+				<ee:transform doc:name="Transform Message" doc:id="a5e331c3-3569-4e2f-81e9-ca1dfbab9422" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+{
+  status: "error",
+  message: "Course ID not found in the system",
+}&#93;&#93;></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<raise-error doc:name="Raise error" doc:id="b2610baf-45ac-4937-98b2-4705a606eb11" type="VALIDATION:NOT_FOUND" description="Course not found in DB"/>
+			</when>
+			<otherwise>
+				<logger level="INFO" doc:name='"correct courseID"' doc:id="ee8cb9a7-b67d-40aa-b893-305f0f17f585" message='"correct courseID"'/>
+			</otherwise>
+		</choice> [STUDIO] -->
+		<http:request method="GET" doc:name="Request to system api to check duplicates" doc:id="a57bbfce-bf21-4a61-b612-b079ebd32260" config-ref="HTTP_Request_configuration" path="/api/courseEnrollment/check-duplicate">
+			<http:headers ><![CDATA[#[{
+	query: vars.selectDuplicateQuery
+}]]]></http:headers>
+			<http:query-params ><![CDATA[#[{
+	studentId: vars.studentInfo.studentId,
+	courseId: vars.studentInfo.courseId
+}]]]></http:query-params>
+		</http:request>
+		<choice doc:name="Choice" doc:id="7d7ca751-7034-4af4-a525-4696f35e6566">
+			<when expression="#[!isEmpty(payload)]">
+				<ee:transform doc:name="error response" doc:id="46cdf8eb-ef78-4d9d-8741-71ed86e68d7f">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  status: "error",
+  message: "Student already enrolled in this course",
+  studentId: payload[0].student_id,
+  courseId: payload[0].course_id
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<raise-error doc:name="Raise error" doc:id="fbe5b490-166d-421f-aeef-34b8f93e42f1" type="VALIDATION:DUPLICATE" description="duplicate" />
+			</when>
+			<otherwise>
+				<http:request method="GET" doc:name="Request to system api to get count by student" doc:id="392ae669-0de5-4a8a-b2cc-a16078dfbc9a" config-ref="HTTP_Request_configuration" path="/api/courseEnrollment/count-by-student" responseTimeout="#[5000000]">
+					<http:headers><![CDATA[#[{
+	 query: vars.countCoursesQuery
+}]]]></http:headers>
+					<http:query-params><![CDATA[#[{
+    studentId: vars.studentInfo.studentId
+    
+    }]]]></http:query-params>
+				</http:request>
+				<choice doc:name="Choice" doc:id="f041d768-9ee8-41c7-90e6-bc9056c88399">
+					<when expression="#[(payload[0].total_count default 0) &gt;= 3]">
+						<ee:transform doc:name="error response" doc:id="845a10ce-0ed3-427f-8f98-e3aaa005cc18">
+							<ee:message>
+								<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  status: "error",
+  message: "Student cannot enroll in more than 3 courses",
+  studentId: vars.studentInfo.studentId
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+						<raise-error doc:name="Raise error" doc:id="1195ec13-d2a2-4590-8400-bb57b5243984" type="VALIDATION:MAX_COURSES_EXCEEDED" description="exceeded limit" />
+					</when>
+					<otherwise>
+						<http:request method="POST" doc:name="Request to system api to course enrollment" doc:id="b3635d12-5d04-4bf6-8c86-e30dfb529318" config-ref="HTTP_Request_configuration" path="/api/courseEnrollment" responseTimeout="#[500000]">
+					<http:body><![CDATA[#[vars.studentInfo]]]></http:body>
+					<http:headers><![CDATA[#[{
+  query: vars.insertQuery
+  
+  }]]]></http:headers>
+				</http:request>
+						<ee:transform doc:name="success response" doc:id="8d478229-53e4-4b4c-82dc-69d027cab476">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  status: "success",
+  message: "Student enrolled successfully",
+  enrollment: payload
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+					</otherwise>
+				</choice>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="ended" doc:id="44973825-331b-4830-b825-b157ae3f6290" message='sub flow "post-courseEnrollment-subflow" ended' />
+	</sub-flow>
+
+	<sub-flow name="get-students-by-course-sub-flow" doc:id="f554a326-60c3-43a0-b904-650c0a974956" >
+		<logger level="INFO" doc:name="sub-flow started" doc:id="ac1b3a68-24c2-4913-b6fd-09e1974887ff" message='sub-flow "get-students-by-course-sub-flow" started' />
+		<set-variable value='#["SELECT s.student_id ,&#10;       s.student_name ,&#10;       s.mobile_number&#10;FROM student_enrollments e&#10;JOIN students s ON e.student_id = s.student_id&#10;WHERE e.course_id = :course_id;"]' doc:name="selectQuery" doc:id="62602906-f344-4814-8a96-3a27d58e8e6c" variableName="selectQuery"/>
+		<http:request method="GET" doc:name="Request to system api to get students list by course" doc:id="db5e7dc3-aafb-4db5-abba-c9f8bc779bab" config-ref="HTTP_Request_configuration" path="/api/courseEnrollment/students-by-course" responseTimeout="#[500000]">
+			<http:headers ><![CDATA[#[{
+    query: vars.selectQuery
+}]]]></http:headers>
+			<http:query-params ><![CDATA[#[{
+    courseId: attributes.queryParams.courseId
+}]]]></http:query-params>
+		</http:request>
+		<choice doc:name="Choice" doc:id="6318180b-d82d-4d53-8535-ec2be8e79250">
+			<when expression="#[sizeOf(payload)==0]">
+				<raise-error doc:name="Raise error" doc:id="780c0a5e-b67a-45d9-b7d5-ab72616dd444" type="ANY" description="course id is not there in DB" />
+			</when>
+			<otherwise>
+				<ee:transform doc:name="success response" doc:id="b8af0454-81e2-46df-9ec4-60f6eed5a621">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  status: "success",
+  message: "Students retrieved successfully for the course",
+  totalStudents: sizeOf(payload),
+  students: payload
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="sub-flow ended" doc:id="001b3798-c7b6-4f36-b8f5-361f304d8f7c" message='sub-flow "get-students-by-course-sub-flow" ended' />
+	</sub-flow>
+	<sub-flow name="get-courses-by-student-sub-flow" doc:id="e954f092-4326-420d-bcb4-66dc6b49bc4d" >
+		<logger level="INFO" doc:name="sub-flow started" doc:id="b5039141-aa48-4481-9ad7-940033fcfcf9" message='sub-flow "get-courses-by-student-sub-flow" started'/>
+		<set-variable value='#["SELECT &#10;  c.course_id,&#10;  c.course_name &#10;FROM student_enrollments e&#10;JOIN courses c ON e.course_id = c.course_id&#10;WHERE e.student_id = :student_id;&#10;"]' doc:name="selectQuery" doc:id="21abb474-90e0-4ca3-b046-040324b6b5d0" variableName="selectQuery"/>
+		<http:request method="GET" doc:name="Request to system api to get courses list by student" doc:id="8755d25a-5d78-4d4b-aeab-2044f8f46831" config-ref="HTTP_Request_configuration" path="/api/courseEnrollment/courses-by-student" responseTimeout="#[500000]">
+			<http:headers ><![CDATA[#[{
+	 query: vars.selectQuery
+}]]]></http:headers>
+			<http:query-params ><![CDATA[#[{
+            studentId: attributes.queryParams.studentId
+        }]]]></http:query-params>
+		</http:request>
+		<choice doc:name="Choice" doc:id="9c21c028-23bd-4a6d-8ac7-ad19c1ea5083" >
+			<when expression="#[sizeOf(payload)==0]">
+				<raise-error doc:name="Raise error" doc:id="1049ae14-5336-46cc-8823-2424e149511c" type="ANY" description="student id is not there in DB"/>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="success response" doc:id="449a3bf3-99d5-49e0-b20f-ce10e758f4d9">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  status: "success",
+  message: "Courses retrieved successfully for the student",
+  totalCourses: sizeOf(payload),
+  courses: payload
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="sub-flow ended" doc:id="83eb2c48-9653-431f-8a1f-c1912324b8c7" message='sub-flow "get-courses-by-student-sub-flow" ended' />
+	</sub-flow>
+	<sub-flow name="get-courseList-sub-flow" doc:id="f5de2aff-ce3c-4fb9-968e-60cae8336e6d">
+        <logger level="INFO" doc:name="sub flow started" doc:id="cb9ea2b0-9712-4380-8334-4bd329875c59" message='sub-flow "get-courseList subflow" started'/>
+        <ee:transform doc:name="selectQuery" doc:id="20d5dca5-a302-47fa-8568-68da137db8de" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  select: "SELECT * from courses",
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<http:request method="GET" doc:name="calling system api to get course list" doc:id="d1b5d19e-54e4-4818-a0a3-71fa30631061" config-ref="HTTP_Request_configuration" path="/api/coursesList" responseTimeout="#[500000]">
+            <http:headers><![CDATA[#[{
+	query: payload.select
+}]]]></http:headers>
+        </http:request>
+        <choice doc:name="Choice" doc:id="f4926ff8-0581-4d60-b8f3-0a60e101f631" >
+			<when expression="#[sizeOf(payload) &lt; 5]">
+				<ee:transform doc:name="error response" doc:id="6e3bd095-5aa5-4b52-8fef-00dda6e6bdd6" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  status: "error",
+  message: "Minimum 5 courses must be available for enrollment. Found only " ++ sizeOf(payload)
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<raise-error doc:name="Raise error" doc:id="9c4c15b3-2047-4092-8551-0c4891835f51" type="VALIDATION:MIN_COURSES" description="Less than 5 courses available"/>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="success response" doc:id="534cf455-6231-49e7-a998-a538ba7b4ae9">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  status: "success",
+  message: "Courses retrieved successfully",
+  totalCourses: sizeOf(payload),
+  courses: payload
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+			</otherwise>
+		</choice>
+        <logger level="INFO" doc:name="sub flow ended" doc:id="865f77f0-5891-434b-89ad-85fe86ee932c" />
+    </sub-flow>
+
+    <sub-flow name="post-student-registration-sub-flow" doc:id="a1a5f46f-e2a4-458e-957c-47c8e2f211d9">
+        <logger level="INFO" doc:name="sub flow started" doc:id="95390943-9971-4d57-9c73-6190463ae686" message='sub-flow "post-student-registration-sub-flow" started'/>
+
+        <ee:transform doc:name="validating the incoming payload" doc:id="b8b7daf2-4d70-4688-b4e7-d9fe6d2815b5">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  select: "SELECT student_id, student_name, address, mobile_number 
+           FROM students 
+           WHERE mobile_number = :mobile_number;",
+  payload: {
+    name: payload.name,
+    address: payload.address,
+    mobileNumber: payload.mobileNumber
+  }
+}
+]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<set-variable value='#["INSERT INTO students (student_name, address, mobile_number)&#10;             VALUES (:name, :address, :mobile_number)"]' doc:name="insertQuery" doc:id="7ff6ac6f-e990-4786-938f-c660839976ef" variableName="insertQuery"/>
+		<set-variable value="#[payload.payload]" doc:name="Set Variable" doc:id="ed22fe20-af9c-4d9a-a1e0-21ab61433f8d" variableName="studentInfo"/>
+		<http:request method="GET" doc:name="check if student exists" doc:id="c490c9bb-b3df-46e0-a436-cd57f9d4f5e4"
+                      config-ref="HTTP_Request_configuration" path="/api/studentRegistration/by-mobile"
+                      responseTimeout="#[500000]">
+            <http:body><![CDATA[#[payload.payload]]]></http:body>
+            <http:headers><![CDATA[#[{
+	query: payload.select
+}]]]></http:headers>
+            <http:query-params><![CDATA[#[{
+  mobileNumber: payload.payload.mobileNumber
+}]]]></http:query-params>
+        </http:request>
+
+        <choice doc:name="Choice" doc:id="7f458b00-5ba8-47ef-b796-1c956e6d128a">
+            <when expression="#[!isEmpty(payload)]">
+                <ee:transform doc:name="error response" doc:id="5230e276-917c-45a7-96e1-5b3236d447e3">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  status: "error",
+  message: "Student already registered",
+  mobileNumber: payload[0].mobile_number
+}
+]]></ee:set-payload>
+                    </ee:message>
+                </ee:transform>
+                <raise-error doc:name="Raise error" doc:id="5cc96fa6-852f-4cbc-b0a8-968c5fc98728"
+                             type="VALIDATION:BAD_REQUEST" description="Student already registered"/>
+            </when>
+
+            <otherwise>
+				<!-- [STUDIO:"Transform Message"]<ee:transform doc:name="Transform Message" doc:id="e0b6b42c-c5c2-4ec9-a122-adcd5c9b0486">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+{
+    name: payload.name,
+    address: payload.address,
+    mobileNumber: payload.mobileNumber
+  }&#93;&#93;></ee:set-payload>
+					</ee:message>
+				</ee:transform> [STUDIO] -->
+				<http:request method="POST" doc:name="insert student" doc:id="cb2e46b5-3ab9-4e22-9ce5-48a2c4e9d79d"
+                              config-ref="HTTP_Request_configuration" path="/api/studentRegistration" responseTimeout="#[500000]">
+                    <http:body><![CDATA[#[vars.studentInfo]]]></http:body>
+                    <http:headers><![CDATA[#[{
+	query: vars.insertQuery
+}]]]></http:headers>
+                </http:request>
+				<ee:transform doc:name="Transform Message" doc:id="3432b47d-ff04-417e-a9dd-32ccde285f30">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  status: "success",
+  message: "Student registered successfully",
+  student: payload
+}
+]]></ee:set-payload>
+                    </ee:message>
+                </ee:transform>
+            </otherwise>
+        </choice>
+    </sub-flow>
+</mule>

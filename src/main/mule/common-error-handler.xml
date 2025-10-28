@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+	<error-handler name="error-handler_common" doc:id="8198c3f0-2d25-4517-8fc4-10da727cf31b" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="propagate BAD REQUEST error" doc:id="8155ec72-09cd-4b8d-b4bb-053b53abb864" type="APIKIT:BAD_REQUEST" >
+			<flow-ref doc:name="common-error-handler_log" doc:id="4027ad81-75ae-4436-a5fa-545c0d75bf47" name="common-error-handler_log" />
+			<ee:transform doc:name="build error msg" doc:id="faf11da0-21f8-4751-8272-8a61091f4784" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"errorCode":400,
+  	"errorMessage": error.description,
+  	"transactionId": correlationId,
+  	"timeStamp": now(),
+  	"causedBy": null
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="propagate NOT FOUND error" doc:id="a4483a04-7548-4d04-8772-f6b827c37a81" type="APIKIT:NOT_FOUND" >
+			<flow-ref doc:name="common-error-handler_log" doc:id="84fe76f6-fe14-4095-b719-8f78929f209f" name="common-error-handler_log" />
+			<ee:transform doc:name="build error msg" doc:id="0d443545-52ed-40a0-a19a-e113887d43f2" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"errorCode": 404,
+  	"errorMessage": error.description,
+  	"transactionId": correlationId,
+  	"timeStamp": now(),
+  	"causedBy": null
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="propagate METHOD NOT ALLOWED error" doc:id="793f5bd4-94e8-4099-8b99-76732f6b414e" type="APIKIT:METHOD_NOT_ALLOWED" >
+			<flow-ref doc:name="common-error-handler_log" doc:id="ed68d8a0-6a1a-4258-84df-d291f240a91f" name="common-error-handler_log" />
+			<ee:transform doc:name="build error msg" doc:id="395ede29-ebc9-43d4-847f-655e70770b1a" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"errorCode": 405,
+  	"errorMessage": error.description,
+  	"transactionId": correlationId,
+  	"timeStamp": now(),
+  	"causedBy": null
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[405]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="propagate NOT ACCEPTABLE" doc:id="4e6053c5-3c49-4879-8e3b-213876bd2972" type="APIKIT:NOT_ACCEPTABLE" >
+			<flow-ref doc:name="common-error-handler_log" doc:id="3461ee7d-b8e2-449b-99d7-a145dac98b1b" name="common-error-handler_log" />
+			<ee:transform doc:name="build error msg" doc:id="92886b8b-970f-4f76-b340-f905163fd523" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"errorCode": 406,
+  	"errorMessage": error.description,
+  	"transactionId": correlationId,
+  	"timeStamp": now(),
+  	"causedBy": null
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[406]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="propagate UNSUPPORTED MEDIA TYPE" doc:id="722ce959-a70b-4f48-9f23-e059acd14570" type="APIKIT:UNSUPPORTED_MEDIA_TYPE" >
+			<flow-ref doc:name="common-error-handler_log" doc:id="a6e3dcef-f373-4193-af08-39595a42bb24" name="common-error-handler_log" />
+			<ee:transform doc:name="build error msg" doc:id="5b1e1a30-9852-4bb0-85ac-b84872271c49" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"errorCode":415,
+  	"errorMessage": error.description,
+  	"transactionId": correlationId,
+  	"timeStamp": now(),
+  	"causedBy": null
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[415]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="propagate NOT IMPLEMENTED" doc:id="00f30725-b378-4d27-b737-486c0ef064ef" type="APIKIT:NOT_IMPLEMENTED" >
+			<flow-ref doc:name="common-error-handler_log" doc:id="64773e29-4ece-47d1-86d7-c47908efb3db" name="common-error-handler_log" />
+			<ee:transform doc:name="build error msg" doc:id="90a1fc06-fb76-4d4d-a574-506480fc7591" xsi:schemaLocation="&#10;http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd &#10;http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{"errorCode": 501,
+  	"errorMessage": error.description,
+  	"transactionId": correlationId,
+  	"timeStamp": now(),
+  	"causedBy": null
+  	}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[501]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate HTTP:BAD_REQUEST" doc:id="aaf55e49-729f-4cff-944f-62dd8d7ea3ad" type="HTTP:BAD_REQUEST" >
+			<flow-ref doc:name="common-error-handler_log" doc:id="0f21cdd0-f172-459f-9d5c-47130a096e08" name="common-error-handler_log" />
+			<ee:transform doc:name="build error msg" doc:id="fd3e24ed-8e84-4b98-a222-a7bb9320175d" xsi:schemaLocation="&#10;http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd &#10;http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{"errorCode": 400,
+  	"errorMessage": error.description,
+  	"transactionId": correlationId,
+  	"timeStamp": now(),
+  	"causedBy": null
+  	}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[501]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate HTTP:NOT_FOUND" doc:id="c87498ad-f0c3-4124-b68c-68e3db433a86" type="HTTP:NOT_FOUND" >
+			<flow-ref doc:name="common-error-handler_log" doc:id="a8f546c8-1a16-4bd9-b82d-e368a515d77a" name="common-error-handler_log" />
+			<ee:transform doc:name="build error msg" doc:id="6ce3b5ea-5534-4945-b957-704309a016fd" xsi:schemaLocation="&#10;http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd &#10;http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{"errorCode": 404,
+  	"errorMessage": error.description,
+  	"transactionId": correlationId,
+  	"timeStamp": now(),
+  	"causedBy": null
+  	}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[501]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate HTTP:METHOD_NOT_ALLOWED" doc:id="57d31ba6-8f11-416e-8ea5-30eaf88957b6" type="HTTP:METHOD_NOT_ALLOWED" >
+			<flow-ref doc:name="common-error-handler_log" doc:id="ed9e2c63-ae58-4324-84de-deb7c3e1dd7f" name="common-error-handler_log" />
+			<ee:transform doc:name="build error msg" doc:id="c0af082f-9f75-48c9-9d68-cc5dc10623c6" xsi:schemaLocation="&#10;http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd &#10;http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{"errorCode": 405,
+  	"errorMessage": error.description,
+  	"transactionId": correlationId,
+  	"timeStamp": now(),
+  	"causedBy": null
+  	}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[501]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate HTTP:NOT_ACCEPTABLE" doc:id="2ab66f13-4868-4f70-81c8-e5f137454691" type="HTTP:NOT_ACCEPTABLE" >
+			<flow-ref doc:name="common-error-handler_log" doc:id="83a7fd40-685c-4f06-8bb6-9a484e38f761" name="common-error-handler_log" />
+			<ee:transform doc:name="build error msg" doc:id="9bb6980a-6cc6-4a0d-8291-6d14e3b2f856" xsi:schemaLocation="&#10;http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd &#10;http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{"errorCode": 406,
+  	"errorMessage": error.description,
+  	"transactionId": correlationId,
+  	"timeStamp": now(),
+  	"causedBy": null
+  	}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[501]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate HTTP:UNSUPPORTED_MEDIA_TYPE" doc:id="ec92e3ef-a470-450e-91c3-d8b8dc2d6070" type="HTTP:UNSUPPORTED_MEDIA_TYPE" >
+			<flow-ref doc:name="common-error-handler_log" doc:id="78f3cf5f-1fbf-4e8f-ae5b-341e4fcfa456" name="common-error-handler_log" />
+			<ee:transform doc:name="build error msg" doc:id="12c4bcca-853c-44a0-9958-6aec50d71b18" xsi:schemaLocation="&#10;http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd &#10;http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{"errorCode": 415,
+  	"errorMessage": error.description,
+  	"transactionId": correlationId,
+  	"timeStamp": now(),
+  	"causedBy": null
+  	}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[501]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="propagate ANY other error" doc:id="008a2264-cb2a-4399-b4dd-13ef9bf6a631" type="ANY" >
+			<flow-ref doc:name="common-error-handler_log" doc:id="b7430983-6c75-4bad-ac4c-c6aff16bdead" name="common-error-handler_log" />
+			<ee:transform doc:name="build error msg" doc:id="1c61133b-c504-41c4-894f-fe34bb234819" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"errorCode": (vars.httpStatus default error.muleMessage.attributes.statusCode) default p('common.errors.error-code-500'),
+  	"errorMessage": error.description,
+  	"transactionId": correlationId,
+  	"timeStamp": now(),
+  	"causedBy": vars.exceptionResponse default (error.errorMessage.payload)
+  	
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[(vars.httpStatus default error.muleMessage.attributes.statusCode) default 500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<set-variable value="#[payload]" doc:name="Set Exception Payload Var" doc:id="2c5ba08f-6c9d-47fc-98e4-3f390421bd6a" variableName="exceptionResponse" />
+		</on-error-propagate>
+	</error-handler>
+	<sub-flow name="common-error-handler_log" doc:id="9ee54ff6-ca24-44f3-bdb1-83edc80504d8">
+		<logger level="INFO" doc:name="log error" doc:id="7a9e3ddc-1fef-45c8-ad0e-4a7607d667e6" message='#[%dw 2.0&#10;output application/json ---&#10;{&#10; 	attributes: attributes,&#10; 	error:&#10;		errorType: error.errorType default "",&#10;		description: error.description default "",&#10;		detailedDescription: error.detailedDescription default "",&#10;}]' />
+	</sub-flow>
+
+</mule>

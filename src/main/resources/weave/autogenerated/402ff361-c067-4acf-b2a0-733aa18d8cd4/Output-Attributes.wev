@@ -1,0 +1,7 @@
+%dw 2.0
+
+type auto_402ff361_c067_4acf_b2a0_733aa18d8cd4_Output_Attributes = {|
+  headers: {| query: String |}, 
+  queryParams: {| " mobileNumber": Number |}
+|}
+

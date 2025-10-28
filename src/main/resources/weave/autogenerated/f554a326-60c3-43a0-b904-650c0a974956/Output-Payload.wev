@@ -1,0 +1,12 @@
+%dw 2.0
+
+type auto_f554a326_60c3_43a0_b904_650c0a974956_Output_Payload = {
+  courseName: String, 
+  totalStudents: Number, 
+  students: Array<{    studentId: Number,     mobileNumber: String,     name: String,     enrollmentDate: String,     _?: Any  }>, 
+  message: String, 
+  courseId: String, 
+  status: "success" | "error", 
+  _?: Any
+}
+
