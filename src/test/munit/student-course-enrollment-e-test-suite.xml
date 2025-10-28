@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="student-course-enrollment-e-test-suite.xml" />
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest" doc:id="b7713bc6-e8d5-4d67-bcbc-b24204cb8c62" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when api kit" doc:id="4c2e340a-dbe3-4214-a3d0-adfaeeb00de7" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-e-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="359348b9-b40c-488f-a160-895cab422b8f" name="student-course-enrollment-e-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="fbf58473-9af6-4779-826d-404a311124b7" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest1" doc:id="7f90b28c-2bd0-4a5e-a94b-1752a814a4e5" description="Test" expectedErrorType="APIKIT:BAD_REQUEST">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when errror(APIKIT:BAD_REQUEST)" doc:id="5370d731-f645-4697-8a21-a50d43ff1d69" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-e-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="e902949f-21e7-4077-a0d9-22944376b1c9" name="student-course-enrollment-e-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest2" doc:id="aae5da0f-bb7b-41f8-97a4-496e041f7bf1" description="Test" expectedErrorType="APIKIT:NOT_FOUND" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when errror(AAPIKIT:NOT_FOUND)" doc:id="6c62f74e-e0ee-4756-ac5c-9c064c40e6cf" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-e-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="5f11bcad-94c8-4ccf-821d-4cb2aa5dcede" name="student-course-enrollment-e-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest3" doc:id="16bc846b-8f0d-4f00-888d-32ebb8356ac9" description="Test" expectedErrorType="APIKIT:METHOD_NOT_ALLOWED" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when errror(APIKIT:METHOD_NOT_ALLOWED)" doc:id="d6be7d2a-00fd-4cd2-80dc-8468fa8ab32a" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-e-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="737878f6-02a7-484e-9081-8d912969835a" name="student-course-enrollment-e-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest4" doc:id="2aa90269-46f6-4c7d-ab7e-3c5cdd20d117" description="Test" expectedErrorType="APIKIT:NOT_ACCEPTABLE" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when errror(APIKIT:NOT_ACCEPTABLE)" doc:id="abb3aa5b-9541-47b7-a41f-a8659ecd1d32" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-e-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="fbe97a37-e63a-42b0-ae54-4ab6a81effbf" name="student-course-enrollment-e-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest5" doc:id="b197704c-33a0-4c8e-989b-b7a34bd900c1" description="Test" expectedErrorType="APIKIT:UNSUPPORTED_MEDIA_TYPE" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when errror(APIKIT:UNSUPPORTED_MEDIA_TYPE)" doc:id="e7f18026-ac64-4452-a61c-055c19481188" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-e-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="a24dcba4-deea-482e-94b5-8c52bedb2a82" name="student-course-enrollment-e-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest6" doc:id="3fc6180a-f8c9-4f43-8e1f-4e52082b98a7" description="Test" expectedErrorType="APIKIT:NOT_IMPLEMENTED" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when errror(APIKIT:NOT_IMPLEMENTED)" doc:id="e7698021-5f53-46b8-921f-2d94b589def7" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-e-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="e23ca89b-8d65-4755-a004-dc0d10c14007" name="student-course-enrollment-e-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest7" doc:id="778a9eef-bc96-4324-837d-1234842c92ac" description="Test" expectedErrorType="HTTP:BAD_REQUEST" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when errror(HTTP:BAD_REQUEST)" doc:id="a6ed77b6-a2ea-473c-a77d-40be21ac1f9e" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-e-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:BAD_REQUEST" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="5dd72d91-d1c2-46ba-bf77-e887a574d9c3" name="student-course-enrollment-e-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest8" doc:id="033d7ffb-af64-4821-b80e-ada9dee88d60" description="Test" expectedErrorType="HTTP:NOT_FOUND" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when errror(HTTP:NOT_FOUND)" doc:id="d953314b-02fa-44aa-a0ec-9c658bc02fae" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-e-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="0406793b-24b7-44a4-addc-ba15a0c06a7d" name="student-course-enrollment-e-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest9" doc:id="819304dc-1ac6-4a1f-980e-8ea11b97491f" description="Test" expectedErrorType="HTTP:METHOD_NOT_ALLOWED" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when errror(HTTP:METHOD_NOT_ALLOWED)" doc:id="273f654f-86e8-4cb9-adcb-4c894864954f" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-e-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="fef16d86-60be-4003-aa6c-e36242f27294" name="student-course-enrollment-e-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest10" doc:id="88220763-25b6-424f-8a11-45b52433c87f" description="Test" expectedErrorType="HTTP:NOT_ACCEPTABLE" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when errror(HTTP:NOT_ACCEPTABLE)" doc:id="203d8ff0-05d3-4059-824a-3f459f2d10c3" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-e-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="4cf4970b-a0c0-4ef2-8de5-2bee649275e4" name="student-course-enrollment-e-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest11" doc:id="931f98c0-41a8-42ee-bb5d-b93e8efeae82" description="Test" expectedErrorType="HTTP:UNSUPPORTED_MEDIA_TYPE" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when errror(HTTP:UNSUPPORTED_MEDIA_TYPE)" doc:id="60995002-0b7d-425d-b627-8c41073bea09" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-e-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="ed81ee0b-5e5c-4d3e-9404-256b58921736" name="student-course-enrollment-e-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest12" doc:id="8eec114d-7d12-43c2-a541-c480902cb603" description="Test" expectedErrorType="ANY" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when errror(ANY)" doc:id="2c4b0213-0518-4ee6-891e-ca11f9a8ab21" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="student-course-enrollment-e-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="f5748f09-c575-47a8-8e5a-579a97990dce" name="student-course-enrollment-e-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest13" doc:id="0e892740-69a4-4e57-bcd7-16ab12f560f7" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when get course list" doc:id="452ff0b9-08d2-48c2-abb9-d46913107a19" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Request to process layer to get course list" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="382e7407-598f-4b73-9e0e-0a706c770b2e" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;    "status": "success",&#10;    "message": "Courses retrieved successfully",&#10;    "totalCourses": 5,&#10;    "courses": [&#10;        {&#10;            "course_id": "C001",&#10;            "course_name": "Mathematics"&#10;        },&#10;        {&#10;            "course_id": "C002",&#10;            "course_name": "Physics"&#10;        },&#10;        {&#10;            "course_id": "C003",&#10;            "course_name": "Chemistry"&#10;        },&#10;        {&#10;            "course_id": "C004",&#10;            "course_name": "Computer Science"&#10;        },&#10;        {&#10;            "course_id": "C005",&#10;            "course_name": "English Literature"&#10;        }&#10;    ]&#10;}]' mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="bc60941e-d579-4547-8def-9d49828be1ef" name="get:\coursesList:student-course-enrollment-e-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="ab72ccc7-1b25-4e96-bcc1-764dd747000f" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest14" doc:id="58d48add-fe7a-4b3e-ad2a-79792aa859cd" description="Test" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when get list of courses enrolled" doc:id="cc2b0d1a-c018-491c-bcb0-ed6b8d963088" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="GET" attributeName="method" />
+					<munit-tools:with-attribute whereValue="Request to process layer for getting list of courses enrolled" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="634748e3-918d-4e59-b8a3-9653416554e6" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;    "status": "success",&#10;    "message": "Courses retrieved successfully for the student",&#10;    "totalCourses": 3,&#10;    "courses": [&#10;        {&#10;            "course_id": "C001",&#10;            "course_name": "Mathematics"&#10;        },&#10;        {&#10;            "course_id": "C002",&#10;            "course_name": "Physics"&#10;        },&#10;        {&#10;            "course_id": "C004",&#10;            "course_name": "Computer Science"&#10;        }&#10;    ]&#10;}]' mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="ac9b472b-b62a-4ce8-a643-6360c99179f5" name="get:\reports\listOfCoursesEnrolled:student-course-enrollment-e-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="6d7ad9a3-4cd3-46d5-8ba8-fdba02964616" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest15" doc:id="eaf4100e-4d05-4b71-aaa7-f5828bbc0d15" description="Test" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when get list of students enrolled" doc:id="1f7e8472-717d-4088-8c74-48c5113e5406" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="GET" attributeName="method" />
+					<munit-tools:with-attribute whereValue="Request to process layer for getting list of students enrolled" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="17010b4f-01d8-46c0-aefe-9f75a3d53aa5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[%dw 2.0 &#10;output application/json&#10;---&#10;{&#10;    "status": "success",&#10;    "message": "Students retrieved successfully for the course",&#10;    "totalStudents": 2,&#10;    "students": [&#10;        {&#10;            "student_id": 1,&#10;            "student_name": "srikar",&#10;            "mobile_number": "1337435770"&#10;        },&#10;        {&#10;            "student_id": 4,&#10;            "student_name": "John Doe",&#10;            "mobile_number": "9876543210"&#10;        }&#10;    ]&#10;}]' mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="93738aec-9f60-4412-90db-b1c3364ac994" name="get:\reports\listOfStudentsEnrolled:student-course-enrollment-e-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="1df5be96-7b0a-4df6-8a59-c0b57dab3b76" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest16" doc:id="6c28d821-3a3c-4c37-9631-9e452d7f1700" description="Test" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when post course enrollement" doc:id="d5262a82-7fce-462b-a194-8e1584fbddc5" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Request to process layer for course enrollment" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="8e92d9ed-17cc-40ab-a2f3-6848f7bb4eb9" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;    "status": "success",&#10;    "message": "Student enrolled successfully",&#10;    "enrollment": {&#10;        "generatedKeys": {},&#10;        "affectedRows": 1&#10;    }&#10;}]' mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="9b518578-d8c0-4a8e-9bf0-56bb13c8b884" >
+				<munit:payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  "studentId": 4,&#10;  "courseId": "C003"&#10;}]' mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="16b4b3b1-fc95-4a1b-ba7f-2a426ac33395" name="post:\courseEnrollment:application\json:student-course-enrollment-e-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="517b40ce-273a-40b4-943b-2697d4161ed5" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="student-course-enrollment-e-test-suite-student-course-enrollment-e-mainTest17" doc:id="13ab516c-2c12-498b-a8eb-e8f2eeacd5a5" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when post student registration" doc:id="4f2c02c2-41a0-40d0-be79-b4523a946041" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Request to process layer for student registration" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="df153493-1b1e-457d-8e71-b334a48a69cf" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;    "status": "success",&#10;    "message": "Student registered successfully",&#10;    "student": {&#10;        "data": {&#10;            "generatedKeys": {},&#10;            "affectedRows": 1&#10;        }&#10;    }&#10;}]' mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="edc89815-a20f-435a-ae04-9a429a6a3a4c" >
+				<munit:payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  "name": "Doe",&#10;  "address": "123 Main Street, New York, NY 10001",&#10;  "mobileNumber": "9876543211"&#10;}]' mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to student-course-enrollment-e-main" doc:id="4645928c-c915-4098-99f3-705718251476" name="post:\studentRegistration:application\json:student-course-enrollment-e-config" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="ea0400da-8eae-49f6-b80f-badb750414ac" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

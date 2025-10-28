@@ -1,0 +1,17 @@
+%dw 2.0
+
+type auto_9be718ec_3b80_41be_bdb9_25e7c8b3dbf6_Output_Payload = {
+  studentId: Number, 
+  data: {
+    studentId: Number, 
+    address: String, 
+    createdDate?: String, 
+    mobileNumber: String, 
+    name: String, 
+    _?: Any
+  }, 
+  message: String, 
+  status: "success" | "error", 
+  _?: Any
+}
+

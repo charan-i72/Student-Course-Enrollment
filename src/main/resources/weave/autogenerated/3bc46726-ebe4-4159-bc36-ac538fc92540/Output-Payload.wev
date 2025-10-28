@@ -1,0 +1,10 @@
+%dw 2.0
+
+type auto_3bc46726_ebe4_4159_bc36_ac538fc92540_Output_Payload = {
+  courses: Array<{    courseName: String,     courseId: String,     _?: Any  }>, 
+  totalCourses: Number, 
+  message: String, 
+  status: "success", 
+  _?: Any
+}
+

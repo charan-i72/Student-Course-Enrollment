@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <apikit:config name="student-course-enrollment-e-config" api="resource::96a973cd-88ba-4aff-bba1-bbb98d9e01be:exp_layer:1.0.5:raml:zip:student-course-enrollment-e.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <flow name="student-course-enrollment-e-main">
+        <http:listener config-ref="orders-prc-api-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="student-course-enrollment-e-config" />
+    </flow>
+	<flow name="get:\coursesList:student-course-enrollment-e-config" doc:id="3bc46726-ebe4-4159-bc36-ac538fc92540">
+		<flow-ref doc:name="Flow Reference to process layer to get course list" doc:id="b973e2d4-2865-428c-8f07-b9288dffc90b" name="get-courseList-sub-flow"/>
+    </flow>
+    <flow name="get:\reports\listOfCoursesEnrolled:student-course-enrollment-e-config" doc:id="a96767a9-4b8c-4f45-a1c7-fe156222ac77">
+		<flow-ref doc:name="Flow Reference to process layer to get list of courses enrolled" doc:id="0060c0f6-07a3-466f-b097-676cf40e4db0" name="get-list-of-courses-enrolled-sub-flow"/>
+    </flow>
+    <flow name="get:\reports\listOfStudentsEnrolled:student-course-enrollment-e-config" doc:id="995911ac-f735-4e0b-9686-96e4cb0c0f3b">
+		<flow-ref doc:name="Flow Reference to process layer to get list of students enrolled" doc:id="7a9fbf61-9827-4eae-8484-bbc79d057693" name="get-list-of-students-enrolled-sub-flow"/>
+    </flow>
+    <flow name="post:\courseEnrollment:application\json:student-course-enrollment-e-config" doc:id="d13db538-32ba-4e90-8650-575f2b37da80">
+		<flow-ref doc:name="Flow Referenceto process layer to post a course enrollment" doc:id="99a8131f-1db5-436a-94a3-67f1710ab111" name="post-course-Enrollment-sub-flow"/>
+    </flow>
+    <flow name="post:\studentRegistration:application\json:student-course-enrollment-e-config" doc:id="ce29db82-ebb9-44a1-b80b-f92d34a82147">
+		<flow-ref doc:name="Flow Reference to process layer to register a student" doc:id="21c384ea-6d90-4e9c-87cf-ccd618da5d81" name="post-student-registration-sub-flow"/>
+    </flow>
+</mule>
